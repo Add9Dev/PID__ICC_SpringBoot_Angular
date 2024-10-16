@@ -1,4 +1,4 @@
-package be.iccbxl.pid.reservations_springboot;
+package be.iccbxl.pid.reservationsspringboot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
