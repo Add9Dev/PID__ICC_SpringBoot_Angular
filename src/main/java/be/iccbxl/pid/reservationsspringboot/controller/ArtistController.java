@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import be.iccbxl.pid.reservationsspringboot.model.Artist;
 import be.iccbxl.pid.reservationsspringboot.service.ArtistService;
@@ -98,10 +99,13 @@ public class ArtistController {
     @DeleteMapping("/artists/{id}")
     public String delete(@PathVariable("id") long id, Model model) {
         Artist existing = service.getArtist(id);
+
         if(existing!=null) {
             service.deleteArtist(id);
         }
+
         return "redirect:/artists";
     }
+
 
 }
