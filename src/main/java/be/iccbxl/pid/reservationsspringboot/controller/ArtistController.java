@@ -80,7 +80,7 @@ public class ArtistController {
 
     @GetMapping("/artists/create")
     public String create(Model model) {
-        Artist artist = new Artist(null,null);
+        Artist artist = new Artist();
         model.addAttribute("artist", artist);
         return "artist/create";
     }

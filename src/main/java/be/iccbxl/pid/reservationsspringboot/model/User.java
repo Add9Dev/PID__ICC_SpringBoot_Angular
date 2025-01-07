@@ -2,103 +2,58 @@ package be.iccbxl.pid.reservationsspringboot.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotEmpty(message = "The login must not be empty.")
+    @Size(min = 4, max = 30, message = "The login must be between 4 and 30 characters.")
+    @Column(nullable = false, unique = true)
     private String login;
+
+    @NotEmpty(message = "The password must not be empty.")
+    @Size(min = 6, message = "The password must be at least 6 characters long.")
+    @Column(nullable = false)
     private String password;
+
+    @NotEmpty(message = "The firstname must not be empty.")
+    @Size(min = 2, max = 60, message = "The firstname must be between 2 and 60 characters.")
+    @Column(nullable = false)
     private String firstname;
+
+    @NotEmpty(message = "The lastname must not be empty.")
+    @Size(min = 2, max = 60, message = "The lastname must be between 2 and 60 characters.")
+    @Column(nullable = false)
     private String lastname;
+
+    @NotEmpty(message = "The email must not be empty.")
+    @Email(message = "The email must be valid.")
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = true)
     private String langue;
-    private String role;
-    private LocalDateTime created_at;
 
-    protected User() {}
+    @PastOrPresent(message = "The creation date cannot be in the future.")
+    @Column(nullable = false)
+    private LocalDateTime created_at = LocalDateTime.now();
 
-    public User(String login, String firstname, String lastname, String role) {
-        this.login = login;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.role = role;
-        this.created_at = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLangue() {
-        return langue;
-    }
-
-    public void setLangue(String langue) {
-        this.langue = langue;
-    }
-
-    public String getRole() {
-        return langue;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return created_at;
-    }
-
-    @Override
-    public String toString() {
-        return login + "(" + firstname + " " + lastname + " - " + role + ")";
-    }
+    @ManyToOne(optional = false) // Pleins d'utilisateur on un seul role
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 }
