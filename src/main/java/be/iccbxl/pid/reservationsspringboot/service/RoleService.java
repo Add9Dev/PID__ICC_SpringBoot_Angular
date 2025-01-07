@@ -21,9 +21,10 @@ public class RoleService {
         return roles;
     }
 
-    public Optional<Role> getRoleById(Long id) {
-        return repository.findById(id);
+    public Role getRoleById(Long id) {
+        return repository.findById(id).orElse(null);
     }
+
 
     public Role getRoleByName(String role) {
         return repository.findByRole(role);

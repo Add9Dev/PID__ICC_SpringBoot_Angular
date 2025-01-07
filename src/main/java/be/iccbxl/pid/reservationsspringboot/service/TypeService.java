@@ -1,46 +1,46 @@
 package be.iccbxl.pid.reservationsspringboot.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import be.iccbxl.pid.reservationsspringboot.model.Type;
+import be.iccbxl.pid.reservationsspringboot.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import be.iccbxl.pid.reservationsspringboot.model.Type;
-import be.iccbxl.pid.reservationsspringboot.repository.TypeRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TypeService {
     @Autowired
     private TypeRepository repository;
 
+    // Récupérer tous les types
     public List<Type> getAll() {
         List<Type> types = new ArrayList<>();
         repository.findAll().forEach(types::add);
         return types;
     }
 
-    public Optional<Type> getTypeById(Long id) {
-        return repository.findById(id);
+    // Récupérer un type par ID
+    public Type get(String id) {
+        Long indice = Long.parseLong(id);
+        Optional<Type> type = repository.findById(indice);
+        return type.orElse(null); // Retourne null si le type n'existe pas
     }
 
-    public Type getTypeByName(String type) {
-        return repository.findByType(type);
-    }
-
-    public void addType(Type type) {
+    // Ajouter un nouveau type
+    public void add(Type type) {
         repository.save(type);
     }
 
-    public void updateType(Long id, Type updatedType) {
-        repository.findById(id).ifPresent(existingType -> {
-            existingType.setType(updatedType.getType());
-            repository.save(existingType);
-        });
+    // Mettre à jour un type existant
+    public void update(String id, Type type) {
+        repository.save(type);
     }
 
-    public void deleteType(Long id) {
-        repository.deleteById(id);
+    // Supprimer un type
+    public void delete(String id) {
+        Long indice = Long.parseLong(id);
+        repository.deleteById(indice);
     }
 }
