@@ -3,3 +3,5 @@ CREATE TABLE localities (
                             postal_code VARCHAR(10) NOT NULL,
                             locality VARCHAR(255) NOT NULL
 );
+
+ALTER TABLE `localities` MODIFY COLUMN `id` BIGINT NOT NULL AUTO_INCREMENT;
