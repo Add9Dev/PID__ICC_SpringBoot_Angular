@@ -12,6 +12,9 @@ import lombok.ToString;
 
 import com.github.slugify.Slugify;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "locations")
 @Getter
@@ -47,6 +50,9 @@ public class Location {
             message = "Le numéro de téléphone est invalide.")
     private String phone;
 
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Show> shows = new ArrayList<>();
+
     // Constructeur personnalisé avec slugification
     public Location(String designation, String address, Locality locality, String website, String phone) {
         Slugify slg = new Slugify();
@@ -78,5 +84,24 @@ public class Location {
         }
     }
 
+    // Méthodes pour gérer les relations avec Show
+    public void addShow(Show show) {
+        if (!this.shows.contains(show)) {
+            this.shows.add(show);
+            show.setLocation(this);
+        }
+    }
 
+    public void removeShow(Show show) {
+        if (this.shows.remove(show)) {
+            show.setLocation(null);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Location [id=" + id + ", slug=" + slug + ", designation=" + designation
+                + ", address=" + address + ", locality=" + locality + ", website="
+                + website + ", phone=" + phone + ", shows=" + shows.size() + "]";
+    }
 }
