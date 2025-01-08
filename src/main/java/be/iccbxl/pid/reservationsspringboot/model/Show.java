@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import com.github.slugify.Slugify;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -32,6 +34,9 @@ public class Show {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
+
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Representation> representations = new ArrayList<>();
 
     private boolean bookable;
 
@@ -68,4 +73,27 @@ public class Show {
             location.addShow(this);
         }
     }
+
+    public void addRepresentation(Representation representation) {
+        if (!this.representations.contains(representation)) {
+            this.representations.add(representation);
+            representation.setShow(this);
+        }
+    }
+
+    public void removeRepresentation(Representation representation) {
+        if (this.representations.remove(representation)) {
+            representation.setShow(null);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Show [id=" + id + ", slug=" + slug + ", title=" + title
+                + ", description=" + description + ", posterUrl=" + posterUrl + ", location="
+                + location + ", bookable=" + bookable + ", price=" + price
+                + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
+                + ", representations=" + representations.size() + "]";
+    }
+
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"show", "location"}) // Évite les boucles infinies lors de l'affichage
 public class Representation {
 
     @Id
@@ -24,16 +24,23 @@ public class Representation {
     @JoinColumn(name = "show_id", nullable = false)
     private Show show;
 
+    /**
+     * Date et heure de la représentation.
+     */
+    @Column(nullable = false)
+    private LocalDateTime when;
+
+    /**
+     * Lieu de la prestation de la représentation.
+     */
     @ManyToOne
-    @JoinColumn(name = "location_id", nullable = false)
+    @JoinColumn(name = "location_id", nullable = true)
     private Location location;
 
-    @Column(nullable = false)
-    private LocalDateTime schedule;
-
-    public Representation(Show show, Location location, LocalDateTime schedule) {
+    // Constructeur personnalisé
+    public Representation(Show show, LocalDateTime when, Location location) {
         this.show = show;
+        this.when = when;
         this.location = location;
-        this.schedule = schedule;
     }
 }

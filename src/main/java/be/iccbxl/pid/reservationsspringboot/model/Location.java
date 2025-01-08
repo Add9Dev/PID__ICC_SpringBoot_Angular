@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 import com.github.slugify.Slugify;
 
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String slug;
 
     @NotEmpty(message = "La désignation ne doit pas être vide.")
@@ -53,7 +51,9 @@ public class Location {
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Show> shows = new ArrayList<>();
 
-    // Constructeur personnalisé avec slugification
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Representation> representations = new ArrayList<>();
+
     public Location(String designation, String address, Locality locality, String website, String phone) {
         Slugify slg = new Slugify();
         this.slug = slg.slugify(designation);
@@ -64,16 +64,11 @@ public class Location {
         this.phone = phone;
     }
 
-    // Setter personnalisé pour la désignation
     public void setDesignation(String designation) {
         this.designation = designation;
-
-        // Générer le slug automatiquement
-        Slugify slg = new Slugify();
-        this.slug = slg.slugify(designation);
+        this.slug = new Slugify().slugify(designation);
     }
 
-    // Setter personnalisé pour la localité
     public void setLocality(Locality locality) {
         if (this.locality != null) {
             this.locality.removeLocation(this); // Supprimer l'ancienne association
@@ -84,7 +79,6 @@ public class Location {
         }
     }
 
-    // Méthodes pour gérer les relations avec Show
     public void addShow(Show show) {
         if (!this.shows.contains(show)) {
             this.shows.add(show);
@@ -98,10 +92,27 @@ public class Location {
         }
     }
 
+    public void addRepresentation(Representation representation) {
+        if (!this.representations.contains(representation)) {
+            this.representations.add(representation);
+            representation.setLocation(this);
+        }
+    }
+
+    public void removeRepresentation(Representation representation) {
+        if (this.representations.remove(representation)) {
+            representation.setLocation(null);
+        }
+    }
+
+
     @Override
     public String toString() {
         return "Location [id=" + id + ", slug=" + slug + ", designation=" + designation
-                + ", address=" + address + ", locality=" + locality + ", website="
-                + website + ", phone=" + phone + ", shows=" + shows.size() + "]";
+                + ", address=" + address	+ ", locality=" + locality + ", website="
+                + website + ", phone=" + phone + ", shows=" + shows.size()
+                + ", representations=" + representations.size() + "]";
     }
+
+
 }
