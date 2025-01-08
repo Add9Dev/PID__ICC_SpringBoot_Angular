@@ -24,6 +24,7 @@
             <tr th:each="artist : ${artists}">
                 <td th:text="${artist.firstname}">Bob</td>
                 <td th:text="${artist.lastname}">Sull</td>
+
                 <td><a th:href="@{/artists/{id}(id=${artist.id})}">View</a></td>
                 <td><a th:href="@{/artists/{id}/edit(id=${artist.id})}">Edit</a></td>
                 <td>
