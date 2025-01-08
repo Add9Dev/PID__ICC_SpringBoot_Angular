@@ -38,6 +38,10 @@ public class Show {
     @OneToMany(mappedBy = "show", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Representation> representations = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "shows")
+    private List<ArtistType> artistTypes = new ArrayList<>();
+
+
     private boolean bookable;
 
     private double price;
@@ -86,6 +90,25 @@ public class Show {
             representation.setShow(null);
         }
     }
+
+    public Show addArtistType(ArtistType artistType) {
+        if(!this.artistTypes.contains(artistType)) {
+            this.artistTypes.add(artistType);
+            artistType.addShow(this);
+        }
+
+        return this;
+    }
+
+    public Show removeArtistType(ArtistType artistType) {
+        if(this.artistTypes.contains(artistType)) {
+            this.artistTypes.remove(artistType);
+            artistType.getShows().remove(this);
+        }
+
+        return this;
+    }
+
 
     @Override
     public String toString() {
