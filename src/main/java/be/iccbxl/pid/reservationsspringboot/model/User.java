@@ -1,59 +1,131 @@
 package be.iccbxl.pid.reservationsspringboot.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Size;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotEmpty(message = "The login must not be empty.")
-    @Size(min = 4, max = 30, message = "The login must be between 4 and 30 characters.")
-    @Column(nullable = false, unique = true)
+    @NotEmpty(message = "Login must not be empty.")
     private String login;
 
-    @NotEmpty(message = "The password must not be empty.")
-    @Size(min = 6, message = "The password must be at least 6 characters long.")
-    @Column(nullable = false)
+    @NotEmpty(message = "Password must not be empty.")
     private String password;
 
-    @NotEmpty(message = "The firstname must not be empty.")
-    @Size(min = 2, max = 60, message = "The firstname must be between 2 and 60 characters.")
-    @Column(nullable = false)
     private String firstname;
-
-    @NotEmpty(message = "The lastname must not be empty.")
-    @Size(min = 2, max = 60, message = "The lastname must be between 2 and 60 characters.")
-    @Column(nullable = false)
     private String lastname;
 
-    @NotEmpty(message = "The email must not be empty.")
-    @Email(message = "The email must be valid.")
-    @Column(nullable = false, unique = true)
+    @NotEmpty(message = "Email must not be empty.")
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = true)
     private String langue;
 
-    @PastOrPresent(message = "The creation date cannot be in the future.")
     @Column(nullable = false)
     private LocalDateTime created_at = LocalDateTime.now();
 
-    @ManyToOne(optional = false) // Pleins d'utilisateur on un seul role
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    @ManyToMany
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<Role> roles = new ArrayList<>();
+
+    public User() {}
+
+    public User(String login, String firstname, String lastname) {
+        this.login = login;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.created_at = LocalDateTime.now();
+    }
+
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLangue() {
+        return langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return created_at;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void addRole(Role role) {
+        if (!this.roles.contains(role)) {
+            this.roles.add(role);
+            role.getUsers().add(this);
+        }
+    }
+
+    public void removeRole(Role role) {
+        if (this.roles.contains(role)) {
+            this.roles.remove(role);
+            role.getUsers().remove(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return login + " (" + firstname + " " + lastname + ")";
+    }
 }

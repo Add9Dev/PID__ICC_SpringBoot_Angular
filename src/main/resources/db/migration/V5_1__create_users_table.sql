@@ -1,12 +1,11 @@
-CREATE TABLE users (
-                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                       login VARCHAR(30) NOT NULL UNIQUE,
-                       password VARCHAR(255) NOT NULL,
-                       firstname VARCHAR(60) NOT NULL,
-                       lastname VARCHAR(60) NOT NULL,
-                       email VARCHAR(100) NOT NULL UNIQUE,
-                       langue VARCHAR(20),
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       role_id BIGINT NOT NULL,
-                       CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
-);
+CREATE TABLE `users` (
+                         `id` BIGINT NOT NULL AUTO_INCREMENT,
+                         `login` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `firstname` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `lastname` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `langue` varchar(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+                         `created_at` datetime NOT NULL,
+                         PRIMARY KEY(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

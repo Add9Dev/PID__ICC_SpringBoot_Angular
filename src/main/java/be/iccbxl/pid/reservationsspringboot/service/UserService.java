@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import be.iccbxl.pid.reservationsspringboot.model.Role;
 import be.iccbxl.pid.reservationsspringboot.model.User;
 import be.iccbxl.pid.reservationsspringboot.repository.UserRepository;
 
@@ -45,7 +46,13 @@ public class UserService {
             existingUser.setLastname(updatedUser.getLastname());
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setLangue(updatedUser.getLangue());
-            existingUser.setRole(updatedUser.getRole());
+
+            // Mise à jour des rôles
+            existingUser.getRoles().clear();
+            for (Role role : updatedUser.getRoles()) {
+                existingUser.addRole(role);
+            }
+
             return userRepository.save(existingUser);
         }).orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
     }
