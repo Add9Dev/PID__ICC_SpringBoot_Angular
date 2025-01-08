@@ -10,21 +10,24 @@ import jakarta.validation.constraints.NotEmpty;
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotEmpty(message = "Login must not be empty.")
+    @Column(nullable = false, unique = true)
     private String login;
 
     @NotEmpty(message = "Password must not be empty.")
+    @Column(nullable = false)
     private String password;
 
     private String firstname;
     private String lastname;
 
     @NotEmpty(message = "Email must not be empty.")
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     private String langue;
@@ -34,13 +37,21 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "user_role",
+            name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles = new ArrayList<>();
 
-    public User() {}
+    @ManyToMany
+    @JoinTable(
+            name = "user_representations",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "representation_id")
+    )
+    private List<Representation> representations = new ArrayList<>();
+
+    protected User() {}
 
     public User(String login, String firstname, String lastname) {
         this.login = login;
@@ -110,18 +121,40 @@ public class User {
         return roles;
     }
 
-    public void addRole(Role role) {
+    public List<Representation> getRepresentations() {
+        return representations;
+    }
+
+    public User addRole(Role role) {
         if (!this.roles.contains(role)) {
             this.roles.add(role);
             role.getUsers().add(this);
         }
+        return this;
     }
 
-    public void removeRole(Role role) {
+    public User removeRole(Role role) {
         if (this.roles.contains(role)) {
             this.roles.remove(role);
             role.getUsers().remove(this);
         }
+        return this;
+    }
+
+    public User addRepresentation(Representation representation) {
+        if (!this.representations.contains(representation)) {
+            this.representations.add(representation);
+            representation.getUsers().add(this);
+        }
+        return this;
+    }
+
+    public User removeRepresentation(Representation representation) {
+        if (this.representations.contains(representation)) {
+            this.representations.remove(representation);
+            representation.getUsers().remove(this);
+        }
+        return this;
     }
 
     @Override

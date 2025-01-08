@@ -107,12 +107,11 @@ public class Location {
 
 
     @Override
-    public String toString() {
-        return "Location [id=" + id + ", slug=" + slug + ", designation=" + designation
-                + ", address=" + address	+ ", locality=" + locality + ", website="
-                + website + ", phone=" + phone + ", shows=" + shows.size()
-                + ", representations=" + representations.size() + "]";
-    }
-
+        public String toString() {
+            return "Location [id=" + id + ", slug=" + slug + ", designation=" + designation
+                    + ", address=" + address	+ ", locality=" + locality + ", website="
+                    + website + ", phone=" + phone + ", shows=" + shows.size()
+                    + ", representations=" + representations.size() + "]";
+        }
 
 }
